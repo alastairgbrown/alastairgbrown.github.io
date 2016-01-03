@@ -1,13 +1,2614 @@
-<!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>Alastairgbrown.GitHub.io by alastairgbrown</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  </head>
-  <body>
-    Hello world
+<html>
+<head>
+    <title>Puzzle Maker</title>
+    <style>
+        body {
+            font-family: Calibri;
+        }
 
-  
-  </body>
+        table {
+            border-collapse: collapse;
+        }
+
+        td, #move, #new, #undo, #redo {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #undo, #redo {
+            width: 20px;
+            background-repeat: no-repeat;
+            background-color: lightgray;
+            background-position: center;
+            border: 1px solid #222;
+            border-radius: 2px;
+        }
+
+        #undo {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAOCAIAAACU32q7AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAchJREFUKFNVjsFr01Acx9+f1KuectxuwYs9eHjgwR1z2dyhxDAo1MFGUSZjsNGNlU3sJKBoFdxyUWTCfEmTrjWxeS9pTNo060vSWufJX7eT8OXL+z0+3+/vh777ExDp/zaCWSv8Y0bXZvT3f10j4qXEz3Q/b/UnZjD9aOX7p9nRaXpynr0jue7NrHCGdJro9EpnYyvItt6nyjZd3mXLL1hpxy/X2VaDETZFuKJ9IoFBR6W9Dq6QYtkQljRhSb376O2izMqHbP3AQljRSvutZ69tqUpEhQgSEFrxydk9uSngmqjQ9WMTmgiuUmmb39/gAlZBG8e6xeLPpn8H1xdkY23PQ5AGHFe5VOMPH79qaHabDm8FlYsrxlodoFVSkKiocCiDyrOLgeWGVm8ugBZk9vSlhwQJ7iAwF7BaKKoFsXoLaRcufMKSnTc26njDjh93/GHXm6+4pFGbhm03PGoSYZXiCoUMsoPEDq5ADnh/9MOPgYbkA/mrWOHPGya8kRPynxGfezh2fgGXfOsmtSaDK4srRteLu/4I9Qa5O8xd8EHWi1Kgm+cxdMCh9Q/WzZIxcuMpjac3PgG6N8hOvvBNlRlu4oSQSZ0o/Qczz3SVM3UEmQAAAABJRU5ErkJggg==');
+        }
+
+        #redo {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAOCAIAAACU32q7AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAAchJREFUKFNVjs9L22AYx98/qdd5ynHegpf14CGww3rMReehdEEodIKjKIoIkyoWHatScGzdYJrLxlDQN2lS2yU275s0e9OkafOjtXOnPcVdBp/34eV5vs/3+yDNe9C8P//z0GS/VXeKe/c3zhhAOpsq9vQjTk8uk6PzeP88+aKnmjtp9saKk2InwXaMMJ1s1WixSvO7ztI2XXpLpR2y9SnW3UShI4UMFRKitQO9eEjnC3TuxQcuV+dycraoCiWc32urZPAVu0JJRmvHGi8RTqgsFBrZVxcg4kSZl7BYxhunRn6/KUgyWt2znxbUJ0L1m+boNFg/VjihDjxbj8SdSCgTcEWrVXt+WQWDFvEfqcnG85fvxQooIggBV/T6HThREOldNsNiF9d9MAAbXooyIuFXMNo9M2Y35WT52noUZfhyJlvPQOjsPgwg6Aolwq2QowZuWaxF2C3xILRj+20HCNq2j+Bt1jS+FC0WfsAfZj+dwOgNTHdo/CNEHWfQsYPssgoXVBr0qhMavdD8NbxjI5NFd14EFRnuCDaqn3XIBr/GZQDdrhdb/cTqp5afdvspMr3YZDNUK3xTpyffoy6M/ZQEYyuYkGAC9S+JZXSVaEI8YQAAAABJRU5ErkJggg==');
+        }
+
+
+        .letter, .empty, .code {
+            width: 20px;
+            height: 20px;
+            text-align: center;
+        }
+
+        td.wordGiven {
+            text-align: center;
+        }
+
+        #lettersgrid td,
+        #lettersgrid input {
+            width: 15px;
+            height: 15px;
+            margin: 0px;
+            padding: 0px;
+            text-align: center;
+            font-family: 'Lucida Console';
+        }
+
+        input[id^="name_"] {
+            width: 80px;
+            height: 17px;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        input[id^="text_"] {
+            width: 200px;
+            height: 17px;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        input[onblur^="wordDefinitionUpdate"] {
+            width: 200px;
+            height: 17px;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        input[id$=_text], input[id$=_imageURL], input[id$=_imageSuffix] {
+            width: 250px;
+        }
+
+        input[id$=_imageHeight], input[id$=_imageWidth] {
+            width: 30px;
+        }
+
+        .discrete {
+            width: 10px;
+            height: 14px;
+            margin: 0px;
+            padding: 0px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 10px;
+            font-family: 'Lucida Console';
+            opacity: 0.2;
+        }
+
+            .discrete[value="++"] {
+                width: 14px;
+            }
+
+            .discrete:hover,
+            .discrete:checked,
+            .discrete:focus {
+                opacity: 1;
+            }
+
+        #wordtools input {
+            margin: 0px;
+        }
+
+        input[type="button"][onclick^="wordSelect"] {
+            background: inherit;
+            border: none;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #definitions td {
+            width: 13px;
+        }
+
+        #lettersgrid input {
+            border: none;
+        }
+
+        .selected {
+            background: yellow;
+        }
+
+        .tab {
+            border-bottom: solid black 2px;
+            color: gray;
+        }
+
+
+        .tabselected {
+            border-top: solid black 2px;
+            border-left: solid black 2px;
+            border-right: solid black 2px;
+        }
+
+        #lettersgrid :focus {
+            background-color: red;
+        }
+
+        .number, .code {
+            border: 1px solid darkgray;
+        }
+
+        table#letters td,
+        table#letters th {
+            border: solid black 1px;
+            text-align: center;
+        }
+
+        #lettersgrid td {
+            border: solid gray 1px;
+        }
+
+        #localStorageDisplay td,
+        #localStorageDisplay th {
+            border: solid black 1px;
+        }
+
+        .tab input, .tabselected input {
+            border: none;
+            background-color: inherit;
+        }
+
+        .tab input {
+            color: gray;
+        }
+
+        .number {
+            width: 19px;
+            height: 19px;
+            vertical-align: text-top;
+            text-align: right;
+            font-size: 9px;
+            color: darkgray;
+        }
+
+        .empty {
+            background-color: darkgray;
+        }
+
+        .wordlist td {
+            padding: 2px;
+        }
+
+        table.wordlist td {
+            vertical-align: top;
+        }
+
+        table.wordlist th {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        table#puzzleSettings td,
+        table#wordSettings td {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .trhidden {
+            display: none;
+        }
+
+        .trvisible {
+            display: table-row;
+        }
+
+        #puzzlecodes {
+            margin: 0 auto 0 auto;
+        }
+
+        #definitions {
+            margin: 0 auto auto 0;
+        }
+
+        svg[id^=blankborder_] rect {
+            stroke-width: 0px;
+        }
+
+        #layoutrings .ring {
+            fill: none;
+            stroke-width: 2px;
+            stroke: red;
+        }
+
+        #puzzlerings .ring {
+            fill: none;
+            stroke-width: 2px;
+            stroke: black;
+        }
+
+        @media print {
+            .noprint {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
+        <defs>
+            <linearGradient id="gradT" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" style="stop-color:black;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:black;stop-opacity:0" />
+            </linearGradient>
+            <linearGradient id="gradB" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:black;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:black;stop-opacity:0" />
+            </linearGradient>
+            <linearGradient id="gradL" x1="100%" y1="0%" x2="0%" y2="0%">
+                <stop offset="0%" style="stop-color:black;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:black;stop-opacity:0" />
+            </linearGradient>
+            <linearGradient id="gradR" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:black;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:black;stop-opacity:0" />
+            </linearGradient>
+            <radialGradient id="gradTL" cx="100%" cy="100%" r="100%" fx="100%" fy="100%">
+                <stop offset="0%" style="stop-color:black;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:black;stop-opacity:0" />
+            </radialGradient>
+            <radialGradient id="gradTR" cx="0%" cy="100%" r="100%" fx="0%" fy="100%">
+                <stop offset="0%" style="stop-color:black;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:black;stop-opacity:0" />
+            </radialGradient>
+            <radialGradient id="gradBL" cx="100%" cy="0%" r="100%" fx="100%" fy="0%">
+                <stop offset="0%" style="stop-color:black;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:black;stop-opacity:0" />
+            </radialGradient>
+            <radialGradient id="gradBR" cx="0%" cy="0%" r="100%" fx="0%" fy="0%">
+                <stop offset="0%" style="stop-color:black;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:black;stop-opacity:0" />
+            </radialGradient>
+        </defs>
+    </svg>
+       <table class="noprint">
+        <tr>
+            <td class="tab">&nbsp;</td>
+            <td class="tabselected" id="Layout">
+                <input type="button" value="Layout" onclick="tabChange()" />
+            </td>
+            <td class="tab">&nbsp;</td>
+            <td class="tab" id="Puzzle">
+                <input type="button" value="Puzzle" onclick="tabChange()" />
+            </td>
+            <td class="tab">&nbsp;</td>
+            <td class="tab" id="Transfer">
+                <input type="button" value="Transfer" onclick="tabChange()" />
+            </td>
+            <td class="tab">&nbsp;</td>
+            <td class="tab" id="Images">
+                <input type="button" value="Images" onclick="tabChange()" />
+            </td>
+            <td class="tab">&nbsp;</td>
+            <td class="tab" id="LocalStorage">
+                <input type="button" value="Local Storage" onclick="tabChange()" />
+            </td>
+            <td class="tab" style="width: 100%" />
+        </tr>
+    </table>
+    <div id="LayoutDisplay">
+
+        <div id="layoutrings" style="position: absolute;"></div>
+        <table>
+            <tr>
+                <td />
+                <td>
+                    <input id="title" style="width: 100%; text-align: center;" value="Title" />
+                </td>
+                <td style="width: 30px;" id="size" />
+                <td style="width: 20px;">
+                    <input type="button" id="move" style="width: 20px;" onclick="setMoveDirection(moveDirection.y, moveDirection.x);" />
+                </td>
+                <td style="width: 35px;">
+                    <input type="button" id="new" value="New" style="width: 35px;" onclick="reset()" />
+                </td>
+                <td style="width: 20px;">
+                    <input type="button" id="undo" onclick="keyUndoRedo(actionundo)" />
+                </td>
+                <td style="width: 20px;">
+                    <input type="button" id="redo" onclick="keyUndoRedo(actionredo)" />
+                </td>
+                <td rowspan="3">
+                    <table id="letters">
+                        <tr>
+                            <th>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="50">
+                                    <text transform="rotate(270, 30, 18)">Letter</text>
+                                </svg>
+                            </th>
+                            <th>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="50">
+                                    <text transform="rotate(270, 30, 18)">Count</text>
+                                </svg>
+                            </th>
+                            <th>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="50">
+                                    <text transform="rotate(270, 30, 18)">Code</text>
+                                </svg>
+                            </th>
+                            <th>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="50">
+                                    <text transform="rotate(270, 30, 18)">Given</text>
+                                </svg>
+                            </th>
+                        </tr>
+                    </table>
+                </td>
+                <td rowspan="3" style="text-align: right; vertical-align: top;">
+                    <table id="wordtools" style="margin: 0px auto auto 0px;">
+                        <tr>
+                            <td>
+                                <input type="button" title="Show the Options" value="Options ˅" onclick="wordSettings()" />
+                            </td>
+                            <td>
+                                <input type="button" title="Auto fit all the words" value="Fit All" onclick="wordAutofit(true)" />
+                            </td>
+                            <td>
+                                <input type="button" title="Auto fit the selected words" value="Fit Selected" onclick="wordAutofit(false)" />
+                            </td>
+                            <td>
+                                <input type="button" title="Unfit all the words" value="Unfit All" onclick="wordUnfit(true)" />
+                            </td>
+                            <td>
+                                <input type="button" title="Unfit the selected words" value="Unfit Selected" onclick="wordUnfit(false)" />
+                            </td>
+                        </tr>
+                    </table>
+                    <div>
+                        <table id="wordSettings" style="position: absolute; opacity: 0; z-index: -1;">
+                            <tr>
+                                <td colspan="6">
+                                    Alphabet:
+                                    <span id="alphabets"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="wordDefinitions" type="checkbox" onclick="readSettings(); showWords();" /><br />
+                                    <label for="wordDefinitions">Definitions</label>
+                                </td>
+                                <td>
+                                    <input id="wordFind" type="checkbox" onclick="readSettings(); showState(); showWords();" /><br />
+                                    <label for="wordFind">Word find:</label>
+                                </td>
+                                <td style="border-top: solid 1px darkgray; border-bottom: solid 1px darkgray; border-left: solid 1px darkgray;">
+                                    <input id="wordAcross" type="checkbox" onclick="readSettings();" /><br />
+                                    <label for="wordAcross">Across</label>
+                                </td>
+                                <td style="border-top: solid 1px darkgray; border-bottom: solid 1px darkgray;">
+                                    <input id="wordDown" type="checkbox" onclick="readSettings();" /><br />
+                                    <label for="wordDown">Down</label>
+                                </td>
+                                <td style="border-top: solid 1px darkgray; border-bottom: solid 1px darkgray;">
+                                    <input id="wordDiagonal" type="checkbox" onclick="readSettings();" /><br />
+                                    <label for="wordDiagonal">Diagonal</label>
+                                </td>
+                                <td style="border-top: solid 1px darkgray; border-bottom: solid 1px darkgray; border-right: solid 1px darkgray;">
+                                    <input id="wordBackward" type="checkbox" onclick="readSettings();" /><br />
+                                    <label for="wordBackward">Backward</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Subtitle:
+                                </td>
+                                <td colspan="5">
+                                    <input id="subtitle" style="width: 100%; text-align: center;" value="" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <table id="wordTableCompact" style="margin: 0px auto auto 0px; display: table;">
+                        <colgroup>
+                            <col style="width: 120px;" />
+                            <col style="width: 120px;" />
+                            <col style="width: 150px;" />
+                        </colgroup>
+                    </table>
+                    <table id="wordTableDefinition" style="margin: 0px auto auto 0px; display: none;">
+                        <colgroup>
+                            <col style="width: 150px;" />
+                            <col style="width: 40px;" />
+                            <col style="width: 200px;" />
+                        </colgroup>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td />
+                <td colspan="6">
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="button" class="discrete" value="◄" onclick="resize(1, 0, 0, 0)" title="Shrink grid to the right" />
+                            </td>
+                            <td>
+                                <input type="button" class="discrete" value="►" onclick="resize(-1, 0, 0, 0)" title="Expand grid to the left" />
+                            </td>
+                            <td>
+                                <input type="button" class="discrete" value="◄" onclick="resize(0, 0, -1, 0)" title="Shrink grid to the left" id="resizeX" />
+                            </td>
+                            <td>
+                                <input type="button" class="discrete" value="►" onclick="resize(0, 0, 1, 0)" title="Expand grid to the right" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top;">
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="button" class="discrete" value="▲" onclick="resize(0, -1, 0, 0)" title="Expand grid upwards" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="button" class="discrete" value="▼" onclick="resize(0, 1, 0, 0)" title="Shrink grid downwards" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="button" class="discrete" value="▲" onclick="resize(0, 0, 0, -1)" title="Shrink grid upwards" id="resizeY" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="button" class="discrete" value="▼" onclick="resize(0, 0, 0, 1)" title="Expand grid downwards" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td colspan="6" onkeyup="return keyUpGrid(gridactions)" style="vertical-align: top;">
+                    <table id="lettersgrid"></table>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="PuzzleDisplay" style="display: none;">
+        <table class="noprint" id="puzzleSettings">
+            <tr>
+                <td>Type:</td>
+                <td>
+                    <input name="type" type="radio" id="typeCodecracker" onclick="tabChange(currenttab)" />
+                    <label for="typeCodecracker">Codecracker</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="showWords" onclick="tabChange(currenttab)" />
+                    <label for="showWords">Words</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="showAcrossDown" onclick="tabChange(currenttab)" />
+                    <label for="showAcrossDown">Across/Down</label>
+                </td>
+                <td>Order by:</td>
+                <td>
+                    <input name="orderby" type="radio" id="orderByLen" onclick="tabChange(currenttab)" />length
+                </td>
+                <td>Columns:</td>
+                <td>
+                    <input name="columns" type="radio" id="columns2" onclick="tabChange(currenttab)" />
+                    <label for="columns2">2</label>
+                </td>
+            </tr>
+            <tr>
+                <td />
+                <td>
+                    <input name="type" type="radio" id="typeWordfind" onclick="tabChange(currenttab)" />
+                    <label for="typeWordfind">Wordfind</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="showDefinitions" onclick="tabChange(currenttab)" />
+                    <label for="showDefinitions">Definitions</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="showNumbering" onclick="tabChange(currenttab)" />
+                    <label for="showNumbering">Numbered</label>
+                </td>
+                <td />
+                <td>
+                    <input name="orderby" type="radio" id="orderByWord" onclick="tabChange(currenttab)" />word
+                </td>
+                <td />
+                <td>
+                    <input name="columns" type="radio" id="columns4" onclick="tabChange(currenttab)" />
+                    <label for="columns4">4</label>
+                </td>
+            </tr>
+            <tr>
+                <td />
+                <td>
+                    <input name="type" type="radio" id="typeWordfit" onclick="tabChange(currenttab)" />
+                    <label for="typeWordfit">Wordfit</label>
+                </td>
+                <td>
+                    <input type="checkbox" id="showGivenLetters" onclick="tabChange(currenttab)" />
+                    <label for="showGivenLetters">Given Letters</label>
+                </td>
+                <td />
+                <td />
+                <td />
+                <td />
+                <td>
+                    <input name="columns" type="radio" id="columns6" onclick="tabChange(currenttab)" />
+                    <label for="columns6">6</label>
+                </td>
+            </tr>
+            <tr>
+                <td />
+                <td>
+                    <input name="type" type="radio" id="typeCrossword" onclick="tabChange(currenttab)" />
+                    <label for="typeCrossword">Crossword</label>
+                </td>
+            </tr>
+        </table>
+        <div id="puzzlerings" style="position: absolute;"></div>
+        <table>
+            <tr>
+                <td id="puzzletitle" style="text-align: center;" />
+            </tr>
+            <tr>
+                <td id="puzzlesubtitle" style="text-align: center;" />
+            </tr>
+            <tr>
+                <td>
+                    <table id="puzzlegrid"></table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table id="puzzlecodes">
+                        <tr>
+                            <td class="code" id="code1" />
+                            <td class="code" id="code2" />
+                            <td class="code" id="code3" />
+                            <td class="code" id="code4" />
+                            <td class="code" id="code5" />
+                            <td class="code" id="code6" />
+                            <td class="code" id="code7" />
+                            <td class="code" id="code8" />
+                            <td class="code" id="code9" />
+                            <td class="code" id="code10" />
+                            <td class="code" id="code11" />
+                            <td class="code" id="code12" />
+                            <td class="code" id="code13" />
+                        </tr>
+                        <tr>
+                            <td class="code" id="number1" />
+                            <td class="code" id="number2" />
+                            <td class="code" id="number3" />
+                            <td class="code" id="number4" />
+                            <td class="code" id="number5" />
+                            <td class="code" id="number6" />
+                            <td class="code" id="number7" />
+                            <td class="code" id="number8" />
+                            <td class="code" id="number9" />
+                            <td class="code" id="number10" />
+                            <td class="code" id="number11" />
+                            <td class="code" id="number12" />
+                            <td class="code" id="number13" />
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td class="code" id="code14" />
+                            <td class="code" id="code15" />
+                            <td class="code" id="code16" />
+                            <td class="code" id="code17" />
+                            <td class="code" id="code18" />
+                            <td class="code" id="code19" />
+                            <td class="code" id="code20" />
+                            <td class="code" id="code21" />
+                            <td class="code" id="code22" />
+                            <td class="code" id="code23" />
+                            <td class="code" id="code24" />
+                            <td class="code" id="code25" />
+                            <td class="code" id="code26" />
+                        </tr>
+                        <tr>
+                            <td class="code" id="number14" />
+                            <td class="code" id="number15" />
+                            <td class="code" id="number16" />
+                            <td class="code" id="number17" />
+                            <td class="code" id="number18" />
+                            <td class="code" id="number19" />
+                            <td class="code" id="number20" />
+                            <td class="code" id="number21" />
+                            <td class="code" id="number22" />
+                            <td class="code" id="number23" />
+                            <td class="code" id="number24" />
+                            <td class="code" id="number25" />
+                            <td class="code" id="number26" />
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td id="puzzlewordlist" />
+            </tr>
+        </table>
+    </div>
+
+    <div id="ImagesDisplay" style="display: none;">
+    </div>
+    <div id="TransferDisplay" style="display: none;">
+        <table>
+            <tr>
+                <td>
+                    <input type="button" value="Export All" onclick="transferExportAll()" />
+                </td>
+                <td>
+                    <input type="button" value="Import All" onclick="transferImportAll()" />
+                </td>
+            </tr>
+        </table>
+        <textarea id="transfertextarea" cols="60" rows="60"></textarea>
+    </div>
+    <div id="LocalStorageDisplay" style="display: none;">
+        <br />
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Time</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+            <tbody id="localstoragegrid" />
+        </table>
+    </div>
+    <script lang="javascript" id="Alphabets">
+        function Alphabets(alphabets) {
+            this.alphabets = alphabets;
+            this.all = '';
+            this.max = 0;
+
+            for (var name in alphabets) {
+                this[name] = alphabets[name];
+                this.max = Math.max(this.max, alphabets[name].length);
+                this.all += alphabets[name];
+            }
+        }
+
+        Alphabets.prototype.fromSettings = function Alphabets_fromSettings(settings) {
+            for (var name in this.alphabets) {
+                if (settings['alphabet' + name])
+                    return this[name];
+            }
+
+            for (var name in this.alphabets) {
+                return this[name];
+            }
+        }
+    </script>
+    <script lang="javascript" id="GridActions">
+        function GridActions(alphabets) {
+            this['37'] = { process: keyMoveGrid, gridmove: { x: -1, y: 0 }, name: 'Left' };
+            this['38'] = { process: keyMoveGrid, gridmove: { x: 0, y: -1 }, name: 'Up' };
+            this['39'] = { process: keyMoveGrid, gridmove: { x: 1, y: 0 }, name: 'Right' };
+            this['40'] = { process: keyMoveGrid, gridmove: { x: 0, y: 1 }, name: 'Down' };
+            this['8'] = { process: keyBackspace, name: 'Backspace' };
+            this['32'] = { process: keyLetter, name: ' ' };
+            this['C90'] = actionundo;
+            this['C89'] = actionredo;
+
+            var alnum = alphabets.English + alphabets.Numbers;
+
+            for (var i = 0; i < alnum.length; i++)
+                this[alnum.charCodeAt(i)] = this[alnum.toLowerCase().charCodeAt(i)] = { process: keyLetter, gridmove: moveDirection, name: alnum[i] };
+        }
+
+    </script>
+    <script lang="javascript" id="WordActions">
+        function WordActions(alphabets) {
+            this['38'] = { process: keyMoveWord, wordmove: -1, name: 'Up' };
+            this['40'] = { process: keyMoveWord, wordmove: 1, name: 'Down' };
+            this['C90'] = actionundo;
+            this['C89'] = actionredo;
+
+            var alnum = alphabets.English + alphabets.Numbers;
+
+            for (var i = 0; i < alnum.length; i++)
+                this[alnum.charCodeAt(i)] = this[alnum.toLowerCase().charCodeAt(i)] = { process: keyEnsureBlank };
+        }
+
+    </script>
+    <script lang="javascript" id="Grid">
+        function Grid() {
+            this.undo = [];
+            this.redo = [];
+            this.defaults = {
+                title: 'Title',
+                subtitle: '',
+                alphabetEnglish: true,
+                alphabetTeReo: false,
+                alphabetNumbers: false,
+                typeCodecracker: true,
+                typeWordfit: false,
+                typeWordfind: false,
+                typeCrossword: false,
+                showWords: false,
+                showDefinitions: false,
+                showAcrossDown: false,
+                showNumbering: true,
+                showGivenLetters: true,
+                orderByLen: false,
+                orderByWord: true,
+                columns2: false,
+                columns4: true,
+                columns6: false,
+                wordColumns: 3,
+                wordDefinitions: false,
+                wordFind: false,
+                wordAcross: true,
+                wordDown: true,
+                wordDiagonal: true,
+                wordBackward: true,
+            };
+            this.settings = JSON.parse(JSON.stringify(this.defaults));
+        }
+
+        Grid.prototype.reset = function Grid_reset(xmin, ymin, xmax, ymax) {
+            this.xmin = xmin;
+            this.ymin = ymin;
+            this.xmax = xmax;
+            this.ymax = ymax;
+            this.letterinfo = {};
+            this.grid = {};
+            this.words = [new Header('Across', 0), new Header('Down', 1), new Header('New Words', 2)];
+            this.undo.length = this.redo.length = this.undoindex = 0;
+
+            for (var i = 0; i < alphabets.all.length; i++)
+                this.letterinfo[alphabets.all[i]] = { refs: [], code: 0, given: false };
+        }
+
+        Grid.prototype.get = function Grid_get(x, y) {
+            if (x >= this.xmin && y >= this.ymin && x < this.xmax && y < this.ymax)
+                return this.grid[x + y * 1000];
+            else
+                return null;
+        }
+
+        Grid.prototype.set = function Grid_set(x, y, letter) {
+            if (x >= this.xmin && y >= this.ymin && x < this.xmax && y < this.ymax) {
+                if (this.letterinfo[letter] == null)
+                    delete this.grid[x + y * 1000];
+                else
+                    this.grid[x + y * 1000] = letter;
+            }
+        }
+
+        Grid.prototype.nextWordId = function Grid_nextWordId() {
+            var i = 0;
+
+            while (i < this.words.length && this.words[i] != null)
+                i++;
+
+            return i;
+        }
+
+        Grid.prototype.getWords = function Grid_getWords(dx, dy) {
+            var words = [];
+
+            for (var y = this.ymin; y < this.ymax; y++) {
+                for (var x = this.xmin; x < this.xmax; x++) {
+                    if (this.get(x - dx, y - dy) == null && this.get(x, y) != null && this.get(x + dx, y + dy) != null) {
+
+                        var word = this.get(x, y);
+
+                        for (var i = 1; this.get(x + dx * i, y + dy * i) != null; i++)
+                            word += this.get(x + dx * i, y + dy * i).toLowerCase();
+
+                        words.push(new FittedWord(word, x, y, dx, dy));
+                    }
+                }
+            }
+
+            return words;
+        }
+
+        Grid.prototype.setLetter = function Grid_setLetter(txn, undoredo) {
+
+            undoredo.push({
+                id: this.undoid,
+                action: Grid.prototype.setLetter,
+                x: txn.x,
+                y: txn.y,
+                letter: this.get(txn.x, txn.y)
+            });
+
+            this.set(txn.x, txn.y, txn.letter);
+        }
+
+        Grid.prototype.setSize = function Grid_setSize(txn, undoredo) {
+
+            undoredo.push({
+                id: this.undoid,
+                action: Grid.prototype.setSize,
+                xmin: this.xmin,
+                ymin: this.ymin,
+                xmax: this.xmax,
+                ymax: this.ymax
+            });
+
+            this.xmin = txn.xmin;
+            this.ymin = txn.ymin;
+            this.xmax = txn.xmax;
+            this.ymax = txn.ymax;
+        }
+
+        Grid.prototype.setWord = function Grid_setWord(txn, undoredo) {
+
+            undoredo.push({
+                id: this.undoid,
+                action: Grid.prototype.setWord,
+                wordid: txn.wordid,
+                word: this.words[txn.wordid],
+            });
+
+            if (txn.word == null) {
+                delete this.words[txn.wordid];
+            } else {
+                txn.word.wordid = txn.wordid;
+                this.words[txn.wordid] = txn.word;
+            }
+        }
+
+        Grid.prototype.setLetters = function Grid_setLetters(word) {
+
+            var l = Math.max(0, this.xmin - word.x);
+            var t = Math.max(0, this.ymin - word.y);
+            var r = Math.max(0, word.x + word.word.length * word.dx - this.xmax);
+            var b = Math.max(0, word.y + word.word.length * word.dy - this.ymax);
+
+            if (l + t + r + b > 0)
+                this.setSize({
+                    xmin: this.xmin - l,
+                    ymin: this.ymin - t,
+                    xmax: this.xmax + r,
+                    ymax: this.ymax + b
+                }, this.undo);
+
+            for (var i = 0; i < word.word.length; i++)
+                this.setLetter({ x: word.x + word.dx * i, y: word.y + word.dy * i, letter: word.word[i] }, this.undo);
+        }
+
+        Grid.prototype.sortWords = function Grid_sortWords(words) {
+
+            words = words || this.words.concat();
+
+            words.sort(function (a, b) {
+                return a.word != '' && b.word == '' ? -1 :
+                       a.word == '' && b.word != '' ? 1 :
+                       a.word < b.word ? -1 :
+                       a.word > b.word ? 1 : 0;
+            });
+
+            return words;
+        }
+
+        Grid.prototype.textGet = function Grid_textGet() {
+            var text = new Date().toISOString() + ' ' + (this.xmax - this.xmin) + ' x ' + (this.ymax - this.ymin);
+            var definitions = {};
+            var words = this.sortWords();
+
+            for (var i in words) {
+                var word = words[i];
+                if (word.word != '' && (word.x == null || word.given || word.text != '' || word.imageURL != '' || this.settings.wordFind)) {
+                    definitions[word.word] = {
+                        given: word.given,
+                        text: word.text,
+                        imageWidth: word.imageWidth,
+                        imageHeight: word.imageHeight,
+                        imageURL: word.imageURL,
+                        imageSuffix: word.imageSuffix
+                    };
+
+                    if (this.settings.wordFind && word.constructor == FittedWord)
+                        definitions[word.word].fitted = true;
+                }
+            }
+
+            for (var y = this.ymin; y < this.ymax; y++) {
+                text += '\n';
+                for (var x = this.xmin; x < this.xmax; x++) {
+                    var letter = this.get(x, y);
+                    text += letter == null ? ' ' : this.letterinfo[letter].given ? letter : letter.toLowerCase();
+                }
+            }
+
+            this.settings.definitions = definitions;
+            text += '\n' + JSON.stringify(this.settings);
+            delete this.settings.definitions;
+
+            return text;
+        }
+
+        Grid.prototype.textSet = function Grid_textSet(text) {
+            var lines = text.split('\n');
+            var settings = '';
+            var validline = new RegExp('[ ' + alphabets.all + ']+', 'i');
+
+            this.reset(0, 0, 1, 1);
+            for (var i = 1, y = 0; i < lines.length; i++) {
+
+                var line = lines[i];
+
+                if (settings == '' && validline.exec(line) == line) {
+                    this.xmax = Math.max(this.xmax, line.length);
+                    this.ymax = y + 1;
+
+                    for (var x = 0; x < line.length; x++) {
+                        this.set(x, y, line[x].toUpperCase());
+
+                        if (line[x] >= 'A' && line[x] <= 'Z')
+                            this.letterinfo[line[x]].given = true;
+                    }
+                    y++;
+                } else {
+                    settings += line + '\n';
+                }
+            }
+
+            try {
+                var settingsObject = JSON.parse(settings);
+
+                for (var i in settingsObject)
+                    this.settings[i] = settingsObject[i];
+            }
+            catch (ex) {
+            }
+
+            var definitions = this.settings.definitions || [];
+            delete this.settings.definitions;
+
+            if (this.settings.wordFind) {
+                for (var i in definitions) {
+                    var definition = definitions[i];
+                    var word = definition.fitted ? new FittedWord(i) : new UnfittedWord(i);
+
+                    word.wordid = this.words.length;
+                    word.setProperties(definition);
+
+                    this.words.push(word);
+                }
+            } else {
+                var words = this.getWords(1, 0).concat(this.getWords(0, 1));
+                var map = new WordMap(words);
+
+                this.words = this.words.concat(words);
+                for (var i in definitions) {
+                    if (map[i] == null)
+                        this.words.push(new UnfittedWord(i));
+                }
+
+                for (var i = 0; i < this.words.length; i++) {
+                    var word = this.words[i];
+                    var definition = definitions[word.word] || {};
+
+                    word.wordid = i;
+                    word.setProperties(definition);
+                }
+            }
+
+            this.setWord({ wordid: this.nextWordId(), word: new UnfittedWord('') }, []);
+            this.updateCounts();
+            this.updateWords();
+            this.undo.length = this.redo.length = 0;
+        }
+
+        Grid.prototype.updateWords = function Grid_updateWords() {
+
+            if (this.settings.wordFind)
+                this.updateWordsWordFind();
+            else
+                this.updateWordsSeparated();
+        }
+
+        Grid.prototype.updateWordsWordFind = function Grid_updateWordsWordFind() {
+
+            var dirs = [{ x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }, { x: -1, y: 1 }, { x: -1, y: 0 }, { x: -1, y: -1 }, { x: 0, y: -1 }, { x: 1, y: -1 }];
+
+            this.settings.typeWordfind = true;
+            this.settings.typeCodecracker = this.settings.typeWordfit = this.settings.typeCrossword = false;
+            this.words[0].headerText = 'Fitted Words';
+            this.words[1].headerText = '';
+
+            for (var i in this.words) {
+                var word = this.words[i];
+                var wordword = word.word.toUpperCase();
+
+                if (word.fitted || word.constructor == FittedWord) {
+
+                    var refs = this.letterinfo[word.word[0]].refs;
+                    var x, y, dx, dy;
+                    var valid = false;
+
+                    delete word.fitted;
+
+                    for (var ref = 0; ref < refs.length && !valid; ref++) {
+                        x = refs[ref][0];
+                        y = refs[ref][1];
+
+                        for (var d = 0; d < dirs.length && !valid; d++) {
+                            dx = dirs[d].x;
+                            dy = dirs[d].y;
+                            valid = true;
+                            for (var z = 0; z < wordword.length && valid; z++)
+                                valid = this.get(x + dx * z, y + dy * z) == wordword[z];
+                        }
+                    }
+
+                    if (!valid) {
+                        // Transition from fitted word to unfitted word
+                        var newword = new UnfittedWord(word.word);
+                        newword.setProperties(word);
+                        this.setWord({ wordid: word.wordid, word: newword }, this.undo);
+
+                    } else if (word.constructor == UnfittedWord) {
+                        // Transition from unfitted word to fitted word
+                        var newword = new FittedWord(word.word, x, y, dx, dy, 0);
+                        newword.setProperties(word);
+                        newword.group = 0;
+                        this.setWord({ wordid: word.wordid, word: newword }, this.undo);
+                    } else if (x != word.x || y != word.y || dx != word.dx || dy != word.dy) {
+                        // Reposition word
+                        var newword = word.clone();
+                        newword.x = x;
+                        newword.y = y;
+                        newword.dx = dx;
+                        newword.dy = dy;
+                        newword.group = 0;
+                        this.setWord({ wordid: word.wordid, word: newword }, this.undo);
+                    }
+                }
+            }
+
+            var fitted = [];
+            var unfitted = [];
+
+            for (var i in this.words) {
+                var word = this.words[i];
+
+                delete word.number;
+
+                if (word.constructor == FittedWord)
+                    fitted.push(word);
+                else if (word.constructor == UnfittedWord)
+                    unfitted.push(word);
+            }
+
+            this.sortWords(fitted);
+            this.sortWords(unfitted);
+
+            var splitpos = this.settings.wordDefinitions ? fitted.length : Math.ceil(fitted.length / 2);
+
+            for (var i = 0; i < fitted.length; i++) {
+                fitted[i].group = Math.floor(i / splitpos);
+                fitted[i].order = 1 + i % splitpos;
+            }
+
+            for (var i = 0; i < unfitted.length; i++)
+                unfitted[i].order = i + 1;
+
+
+            if (unfitted.length == 0 || unfitted[unfitted.length - 1].word != '') {
+                var blank = new UnfittedWord('');
+
+                blank[i].order = unfitted.length + 1;
+
+                this.setWord({ wordid: this.nextWordId(), word: blank }, this.undo);
+            }
+        }
+
+        Grid.prototype.updateWordsSeparated = function Grid_updateWordsSeparated() {
+
+            var fitted = [this.getWords(1, 0), this.getWords(0, 1)];
+            var map = new WordMap(this.words);
+            var unallocated = {};
+            var unfittedmap = {};
+            var numbered = fitted[0].concat(fitted[1]);
+            var number = 1;
+
+            this.words[0].headerText = 'Across';
+            this.words[1].headerText = 'Down';
+
+            for (var i in this.words) {
+                var word = this.words[i];
+                if (word.x == null)
+                    unfittedmap[word.word] = word;
+                else
+                    unallocated[i] = word;
+            }
+
+            numbered.sort(function (a, b) { return (a.x + a.y * 1000) - (b.x + b.y * 1000); });
+            for (var i = 0, number = 1; i < numbered.length; i++) {
+                numbered[i].number = number;
+                number += i + 1 < numbered.length && numbered[i].getId(0) == numbered[i + 1].getId(0) ? 0 : 1;
+            }
+
+            for (var x = 0; x < fitted.length; x++) {
+                for (var y = 0; y < fitted[x].length; y++) {
+                    var word = fitted[x][y];
+                    var found = map[word.getId(0) + '_' + word.dx] || map[word.getId(word.length - 1) + '_' + word.dx] || map[word.word];
+
+                    if (found == null) {
+                        // Brand new word
+                        word.order = y + 1;
+                        this.setWord({ wordid: this.nextWordId(), word: word }, this.undo);
+                    } else if (found.word != word.word || found.x == null) {
+                        // Transition from unfitted word to fitted word OR change word name
+                        word.order = y + 1;
+                        word.setProperties(found);
+                        this.setWord({ wordid: found.wordid, word: word }, this.undo);
+                        delete unallocated[found.wordid];
+                    } else {
+                        // No change
+                        found.order = y + 1;
+                        found.number = word.number;
+                        delete unallocated[found.wordid];
+                    }
+                }
+            }
+
+            for (var i in unallocated) {
+                var found = unallocated[i];
+                if (unfittedmap[found.word]) {
+                    this.setWord({ wordid: found.wordid, word: null }, this.undo);
+                } else {
+                    // Transition from fitted word to unfitted word
+                    var word = new UnfittedWord(found.word);
+                    word.setProperties(found);
+                    this.setWord({ wordid: found.wordid, word: word }, this.undo);
+                }
+            }
+
+            var unfitted = [];
+
+            for (var i in this.words) {
+                delete this.words[i].showdefinition;
+                if (this.words[i].constructor == UnfittedWord)
+                    unfitted.push(this.words[i]);
+            }
+
+            this.sortWords(unfitted);
+
+            if (unfitted.length == 0 || unfitted[unfitted.length - 1].word != '') {
+                var blank = new UnfittedWord('');
+
+                unfitted.push(blank);
+                this.setWord({ wordid: this.nextWordId(), word: blank }, this.undo);
+            }
+
+            for (var i = 0; i < unfitted.length; i++)
+                unfitted[i].order = i + 1;
+        }
+
+        Grid.prototype.updateCounts = function Grid_updateCounts() {
+
+            var nextcode = 0;
+
+            for (var letter in this.letterinfo)
+                this.letterinfo[letter].code = this.letterinfo[letter].refs.length = 0;
+
+            for (var y = this.ymin; y < this.ymax; y++) {
+                for (var x = this.xmin; x < this.xmax; x++) {
+                    var letter = this.get(x, y);
+                    if (letter != null) {
+                        if (this.letterinfo[letter].code == 0)
+                            this.letterinfo[letter].code = ++nextcode;
+                        this.letterinfo[letter].refs.push([x, y]);
+                    }
+                }
+            }
+
+            return nextcode == 0;
+        }
+
+        Grid.prototype.wordFit = function Grid_wordFit(word) {
+
+            var locations = [];
+            var xcentre = (this.xmax - this.xmin) / 2;
+            var ycentre = (this.ymax - this.ymin) / 2;
+            var pattern = '[' + alphabets.fromSettings(this.settings) + '][' + alphabets.fromSettings(this.settings) + ']+';
+
+            if (new RegExp(pattern, 'i').exec(word.word) != word.word) {
+                word.failreason = 'Word must be at least two letters and be only letters';
+                return locations;
+            }
+
+            locations = this.settings.wordFind ? this.wordFitWordFind(word) : this.wordFitSeparated(word);
+
+            for (var i in locations) {
+                var location = locations[i];
+                location.dist = Math.max(Math.abs(location.x + location.dx * location.word.length / 2 - xcentre),
+                                         Math.abs(location.y + location.dy * location.word.length / 2 - ycentre));
+            }
+
+            locations.sort(function (a, b) {
+                return a.inbounds && !b.inbounds ? -1 :
+                       !a.inbounds && b.inbounds ? 1 :
+                       a.newletters < b.newletters ? -1 :
+                       a.newletters > b.newletters ? 1 :
+                       a.dist < b.dist ? -1 :
+                       a.dist > b.dist ? 1 : 0;
+            });
+
+            word.failreason = word.failreason || ('Nowhere found to place ' + word.word);
+
+            return locations;
+        }
+
+        Grid.prototype.wordFitWordFind = function Grid_wordFitWordFind(word) {
+            var wordword = word.word.toUpperCase();
+            var locations = [];
+            var dirs = [].concat(this.settings.wordAcross ? [{ x: 1, y: 0 }] : [],
+                                 this.settings.wordDown ? [{ x: 0, y: 1 }] : [],
+                                 this.settings.wordDiagonal ? [{ x: 1, y: 1 }] : [],
+                                 this.settings.wordBackward && this.settings.wordAcross ? [{ x: 0, y: -1 }] : [],
+                                 this.settings.wordBackward && this.settings.wordDown ? [{ x: 0, y: -1 }] : [],
+                                 this.settings.wordBackward && this.settings.wordDiagonal ? [{ x: -1, y: 1 }, { x: 1, y: -1 }, { x: -1, y: -1 }] : []);
+            dirs = dirs.length == 0 ? [{ x: 1, y: 0 }, { x: 0, y: 1 }] : dirs;
+
+            for (var attempt = 0; attempt < 100 && locations.length < (word.locationCount || 10) ; attempt++) {
+                var d = Math.floor(Math.random() * dirs.length);
+                var dx = dirs[d].x;
+                var dy = dirs[d].y;
+                var x = this.xmin + Math.floor(Math.random() * (this.xmax - this.xmin));
+                var y = this.ymin + Math.floor(Math.random() * (this.ymax - this.ymin));
+                var x1 = x - dx * Math.floor(wordword.length / 2);
+                var y1 = y - dy * Math.floor(wordword.length / 2);
+                var x2 = x1 + dx * (wordword.length - 1);
+                var y2 = y1 + dy * (wordword.length - 1);
+                var valid = x1 >= this.xmin && y1 >= this.ymin && x1 < this.xmax && y1 < this.ymax &&
+                            x2 >= this.xmin && y2 >= this.ymin && x2 < this.xmax && y2 < this.ymax;
+                var newletters = 0;
+
+                for (var i = 0; i < wordword.length && valid; i++) {
+                    var letter = this.get(x1 + dx * i, y1 + dy * i);
+                    if (letter == null)
+                        newletters++;
+                    else
+                        valid = letter == wordword[i];
+                }
+
+                if (valid) {
+                    var location = new FittedWord(wordword, x1, y1, dx, dy, 0);
+                    location.inbounds = true;
+                    location.newletters = newletters;
+                    locations.push(location);
+                }
+            }
+
+            return locations;
+        }
+
+        Grid.prototype.wordFitSeparated = function Grid_wordFitSeparated(word) {
+
+            var wordword = word.word.toUpperCase();
+            var locations = [];
+            var dirs = [{ x: 1, y: 0 }, { x: 0, y: 1 }];
+            var nomatches = true;
+
+            for (var y = this.ymin; y < this.ymax; y++) {
+                for (var x = this.xmin; x < this.xmax; x++) {
+
+                    var letter = this.get(x, y);
+
+                    for (var w = wordword.indexOf(letter) ; w != -1; w = wordword.indexOf(letter, w + 1)) {
+
+                        nomatches = false;
+
+                        for (var d = 0; d < dirs.length; d++) {
+                            var dx = dirs[d].x;
+                            var dy = dirs[d].y;
+                            var x1 = x - dx * w;
+                            var y1 = y - dy * w;
+                            var x2 = x1 + dx * (wordword.length - 1);
+                            var y2 = y1 + dy * (wordword.length - 1);
+                            var valid = this.get(x1 - dx, y1 - dy) == null && this.get(x2 + dx, y2 + dy) == null;
+                            var newletters = 0;
+                            var consecutives = 0;
+
+                            for (var i = 0, cx = x1, cy = y1; i < wordword.length && valid; i++, cx += dx, cy += dy) {
+                                if (this.get(cx, cy) != wordword[i]) {
+                                    newletters++;
+                                    valid = this.get(cx - dy, cy - dx) == null && this.get(cx, cy) == null && this.get(cx + dy, cy + dx) == null;
+                                } else if (this.get(cx + dx, cy + dy) != null) {
+                                    consecutives++;
+                                }
+                            }
+
+                            if (valid && (consecutives == 0 || newletters == 0)) {
+                                var location = new FittedWord(wordword, x1, y1, dx, dy);
+                                location.inbounds = x1 >= this.xmin && y1 >= this.ymin && x2 < this.xmax && y2 < this.ymax;
+                                location.newletters = newletters;
+                                locations.push(location);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (locations.length == 0) {
+                if (this.updateCounts())
+                    locations.push(new FittedWord(wordword, Math.floor((grid.xmax - grid.xmin - wordword.length) / 2),
+                                                            Math.floor((grid.ymax - grid.ymin) / 2), 1, 0));
+                else if (nomatches)
+                    word.failreason = 'No matching letters anywhere';
+            }
+
+            return locations;
+        }
+
+        Grid.prototype.transactionNew = function Grid_transactionNew(description) {
+
+            this.redo.length = 0;
+            this.undoid = (++this.undoindex) + '_' + description;
+        }
+
+        Grid.prototype.transactionUndo = function Grid_transactionUndo(primary, secondary, undoid) {
+            this.undoid = undoid || primary[primary.length - 1].id;
+
+            while (primary.length > 0 && primary[primary.length - 1].id == grid.undoid) {
+                var txn = primary.pop();
+                this.action = txn.action;
+                this.action(txn, secondary);
+            }
+        }
+
+        Grid.prototype.table = function Grid_table(cellFunction) {
+            var html = '';
+
+            for (var y = this.ymin; y < this.ymax; y++) {
+                html += '<tr>';
+                for (var x = this.xmin; x < this.xmax; x++)
+                    html += cellFunction(x, y, this.get(x, y));
+                html += '</tr>';
+            }
+
+            return html;
+        }
+
+    </script>
+    <script lang="javascript" id="Header">
+
+        function Header(headerText, dy) {
+            this.headerText = headerText;
+            this.word = '';
+            this.group = this.wordid = dy;
+            this.order = 0;
+        }
+
+        Header.prototype.html = function Header_html(element) {
+            element.innerHTML = '<b>' + this.headerText + '</b>';
+        }
+
+        Header.prototype.definitionCompact = function Header_definitionCompact() {
+        }
+
+        Header.prototype.definitionDefinition = function Header_definition(cellGiven, cellDefinition, settings) {
+            cellGiven.innerHTML = this.headerText == '' ? '' : '<b>Given</b>';
+            cellDefinition.innerHTML = this.headerText == '' ? '' : '<b>Definition</b>';
+        }
+
+        Header.prototype.blankborder = function () { };
+        Header.prototype.setProperties = function () { };
+
+        Header.prototype.title = function Header_title() {
+            return '';
+        }
+    </script>
+    <script lang="JavaScript" id="FittedWord">
+
+        function FittedWord(word, x, y, dx, dy, group) {
+            this.word = word;
+            this.x = x;
+            this.y = y;
+            this.dx = dx;
+            this.dy = dy;
+            this.group = group == null ? dy : group;
+        }
+
+        FittedWord.prototype.newinstance = function FittedWord_newinstance() {
+            return new FittedWord();
+        }
+
+        FittedWord.prototype.clone = function FittedWord_clone(clone) {
+            var clone = this.newinstance();
+
+            for (var i in this)
+                clone[i] = this[i];
+
+            return clone;
+        }
+
+        FittedWord.prototype.setProperties = function FittedWord_setProperties(properties) {
+            this.given = properties.given || false;
+            this.text = properties.text || '';
+            this.selected = properties.selected || false;
+            this.imageWidth = properties.imageWidth || 32;
+            this.imageHeight = properties.imageHeight || 32;
+            this.imageURL = properties.imageURL || '';
+            this.imageSuffix = properties.imageSuffix || '';
+        }
+
+        FittedWord.prototype.html = function FittedWord_html(cell, settings) {
+            cell.innerHTML =
+                '<input type="checkbox"  class="discrete" onclick="wordSelect()" title="Select ' + this.word + '" id="checkbox_' + this.wordid + '"/>' +
+                '<input type="button" class="discrete" value="-" onclick="wordUnfit()"  title="Remove ' + this.word + ' from grid"/>' +
+                '<input type="button" class="discrete"  value="X" onclick="wordDelete()" title="Delete ' + this.word + '"/>' +
+                (settings.wordDefinitions ? '' : '<input type="button"  class="discrete" value="D" onclick="wordDefine()" title="Define ' + this.word + '"/>') +
+                '<label onmousemove="wordMouseMove()" for="checkbox_' + this.wordid + '">' + this.word + '</label>';
+            cell.childNodes[0].checked = this.selected;
+        }
+
+        FittedWord.prototype.definitionCompact = function FittedWord_definitionCompact(cell) {
+            cell.innerHTML =
+                '<label for="given_' + this.wordid + '">Given:</label>' +
+                '<input type="checkbox" id="given_' + this.wordid + '"' +
+                ' onclick="wordDefinitionUpdate()" onkeyup="return keyUp(wordactions)"/>' +
+                '<label for="text_' + this.wordid + '">Def:</label>' +
+                '<input type="text" id="text_' + this.wordid + '"' +
+                ' onblur="wordDefinitionUpdate()" onkeyup="return keyUp(wordactions)"/>';
+            cell.childNodes[1].checked = this.given || false;
+            cell.childNodes[3].value = this.text || '';
+        }
+
+        FittedWord.prototype.imageHtml = function FittedWord_imageHtml() {
+            return this.imageURL == '' ? '' :
+					this.imageURL.indexOf('coloringhub.com') >= 0 ? '' :
+                    '<img width="' + this.imageWidth + '" height="' + this.imageHeight + '" src="' + this.imageURL + '"/>';
+        }
+
+        FittedWord.prototype.definitionDefinition = function FittedWord_definitionDefinition(cellGiven, cellDefinition) {
+
+            cellGiven.className = 'wordGiven';
+            cellGiven.innerHTML = '<input type="checkbox" id="given_' + this.wordid + '"' +
+                                  ' onclick="wordDefinitionUpdate()" onkeyup="return keyUp(wordactions)"/>';
+            cellGiven.childNodes[0].checked = this.given || false;
+            cellDefinition.innerHTML = '<input type="text" id="text_' + this.wordid + '"' +
+                                       ' onblur="wordDefinitionUpdate()" onkeyup="return keyUp(wordactions)"/>';
+            cellDefinition.childNodes[0].value = this.text || '';
+        }
+
+
+        FittedWord.prototype.letters = function FittedWord_letters() {
+            var letters = [];
+
+            for (var i = 0; i < this.word.length; i++)
+                letters.push({ id: this.getId(i) });
+
+            return letters;
+        }
+
+        FittedWord.prototype.getId = function FittedWord_getId(index) {
+            return (this.x + this.dx * index) + '_' + (this.y + this.dy * index);
+        }
+
+        FittedWord.prototype.title = function FittedWord_title() {
+            return (this.number == null ? '' : this.number + ' ' + (this.dx == 1 ? 'Across' : 'Down') + ' - ') +
+                        this.word + ' - ' + this.text + (this.given ? ' (Given)' : '');
+        }
+
+        FittedWord.prototype.blankborder = function FittedWord_blankborder(rings) {
+
+            var anchor = rings.getBoundingClientRect();
+            var first = document.getElementById(this.getId(0)).getBoundingClientRect();
+            var last = document.getElementById(this.getId(this.word.length - 1)).getBoundingClientRect();
+            var html = '';
+            var w = first.width;
+            var h = first.height;
+            var bounds = { left: first.left - w, top: first.top - h, right: last.right + w, bottom: last.bottom + h };
+
+            for (var i = 0; i < this.word.length; i++) {
+                var rect = document.getElementById(this.getId(i)).getBoundingClientRect();
+                var x = this.x + i * this.dx;
+                var y = this.y + i * this.dy;
+                var l = rect.left - bounds.left;
+                var r = rect.right - bounds.left;
+                var t = rect.top - bounds.top;
+                var b = rect.bottom - bounds.top;
+                var ll = l - w / 4;
+                var tt = t - h / 4;
+                var rectL = !grid.get(x - 1, y);
+                var rectR = !grid.get(x + 1, y);
+                var rectT = !grid.get(x, y - 1);
+                var rectB = !grid.get(x, y + 1);
+                var rectTL = !grid.get(x - 1, y - 1) && rectT && rectL;
+                var rectTR = !grid.get(x + 1, y - 1) && rectT && rectR;
+                var rectBL = !grid.get(x - 1, y + 1) && rectB && rectL;
+                var rectBR = !grid.get(x + 1, y + 1) && rectB && rectR;
+
+                if (rectL) html += '<rect x="' + ll + '" y="' + t + '" width="' + w / 4 + '" height="' + h + '" fill="url(#gradL)"/>';
+                if (rectR) html += '<rect x="' + r + '" y="' + t + '" width="' + w / 4 + '" height="' + h + '" fill="url(#gradR)"/>';
+                if (rectT) html += '<rect x="' + l + '" y="' + tt + '" width="' + w + '" height="' + h / 4 + '" fill="url(#gradT)"/>';
+                if (rectB) html += '<rect x="' + l + '" y="' + b + '" width="' + w + '" height="' + h / 4 + '" fill="url(#gradB)"/>';
+                if (rectTL) html += '<rect x="' + ll + '" y="' + tt + '" width="' + w / 4 + '" height="' + h / 4 + '" fill="url(#gradTL)"/>';
+                if (rectTR) html += '<rect x="' + r + '" y="' + tt + '" width="' + w / 4 + '" height="' + h / 4 + '" fill="url(#gradTR)"/>';
+                if (rectBL) html += '<rect x="' + ll + '" y="' + b + '" width="' + w / 4 + '" height="' + h / 4 + '" fill="url(#gradBL)"/>';
+                if (rectBR) html += '<rect x="' + r + '" y="' + b + '" width="' + w / 4 + '" height="' + h / 4 + '"  fill="url(#gradBR)"/>';
+            }
+
+            rings.innerHTML +=
+                '<svg xmlns="http://www.w3.org/2000/svg" id="blankborder_' + this.wordid + '"' +
+                ' style="position: absolute; left: ' + (bounds.left - anchor.left) + 'px; ' +
+                                            'top: ' + (bounds.top - anchor.top) + 'px; ' +
+                                            'width: ' + (bounds.right - bounds.left) + 'px; ' +
+                                            'height: ' + (bounds.bottom - bounds.top) + 'px;" >' +
+                html +
+                '</svg>';
+        }
+
+        FittedWord.prototype.ring = function FittedWord_ring(rings) {
+            var anchor = rings.getBoundingClientRect();
+            var first = document.getElementById(this.getId(0)).getBoundingClientRect();
+            var last = document.getElementById(this.getId(this.word.length - 1)).getBoundingClientRect();
+            var l = Math.min(first.left, last.left) - anchor.left;
+            var t = Math.min(first.top, last.top) - anchor.top;
+            var r = Math.max(first.right, last.right) - anchor.left;
+            var b = Math.max(first.bottom, last.bottom) - anchor.top;
+            var angle = Math.atan2(last.top - first.top, last.left - first.left);
+            var offset = (first.width + first.height) / 4 - 1;
+            var height = (first.width + first.height) / 2 - 2;
+            var width = Math.sqrt(Math.pow(first.left - last.left, 2) + Math.pow(first.top - last.top, 2)) + height;
+            var x = ((first.left - anchor.left) - l) + first.width / 2;
+            var y = ((first.top - anchor.top) - t) + first.height / 2;
+
+            rings.innerHTML +=
+                '<svg xmlns="http://www.w3.org/2000/svg" id="ring_' + this.wordid + '"' +
+                '     style="position: absolute; left: ' + l + 'px; top: ' + t + '; width: ' + (r - l) + 'px; height: ' + (b - t) + 'px;"' +
+                '     onclick="letterClick()">' +
+                '  <rect transform="translate(' + x + ',' + y + ') rotate(' + (angle / Math.PI * 180) + ')"' +
+                '        x="-' + offset + '" y="-' + offset + '" width="' + width + '" height="' + height + '" rx="' + (height / 2) + '" class="ring"/>' +
+                '</svg>';
+        }
+
+    </script>
+    <script lang="javascript" id="UnfittedWord">
+
+        function UnfittedWord(word) {
+            this.group = 2;
+            this.setWordValue(word || '');
+        }
+
+        UnfittedWord.prototype.newinstance = function UnfittedWord_newinstance() {
+            return new UnfittedWord();
+        }
+
+        UnfittedWord.prototype.clone = FittedWord.prototype.clone;
+
+        UnfittedWord.prototype.setWordValue = function UnfittedWord_setWordValue(word, settings) {
+            word = word.trim().toUpperCase();
+
+            if ((settings || {}).alphabetTeReo) {
+                word = word.replace(/AA/g, 'Ā');
+                word = word.replace(/EE/g, 'Ē');
+                word = word.replace(/II/g, 'Ī');
+                word = word.replace(/OO/g, 'Ō');
+                word = word.replace(/UU/g, 'Ū');
+            }
+
+            this.word = word.substr(0, 1) + word.substr(1).toLowerCase();
+        }
+
+        UnfittedWord.prototype.setProperties = FittedWord.prototype.setProperties;
+        UnfittedWord.prototype.definitionCompact = FittedWord.prototype.definitionCompact;
+        UnfittedWord.prototype.definitionDefinition = FittedWord.prototype.definitionDefinition;
+        UnfittedWord.prototype.imageHtml = FittedWord.prototype.imageHtml;
+        UnfittedWord.prototype.blankborder = function () { }
+
+        UnfittedWord.prototype.html = function UnfittedWord_html(element, settings) {
+
+            if (element.childNodes.length != (settings.wordDefinitions ? 5 : 6) || element.lastChild.id != 'name_' + this.wordid) {
+                element.innerHTML =
+                    '<input type="checkbox" class="discrete" onclick="wordSelect()" title="Select ' + this.word + '" id="checkbox_' + this.wordid + '"/>' +
+                    '<input type="button" class="discrete" value="+" onclick="wordFit()" title="Fit ' + this.word + ' into grid, showing options"/>' +
+                    '<input type="button" class="discrete" value="++" onclick="wordAutofit()" title="Automatically fit ' + this.word + ' into grid"/>' +
+                    '<input type="button" class="discrete" value="X" onclick="wordDelete()" title="Delete ' + this.word + '"/>' +
+                    (settings.wordDefinitions ? '' : '<input type="button" class="discrete" value="D" onclick="wordDefine()" title="Define ' + this.word + '"/>') +
+                    '<input onblur="wordUpdate()" id="name_' + this.wordid + '" onkeyup="return keyUp(wordactions)" onmousemove="wordMouseMove()"/>';
+                element.lastChild.value = this.word;
+            }
+
+            element.childNodes[0].checked = this.selected;
+        }
+
+        UnfittedWord.prototype.letters = function UnfittedWord_letters() {
+            return [];
+        }
+
+        UnfittedWord.prototype.title = function UnfittedWord_title() {
+            return this.word == '' ? 'This is where new words are entered' : this.word + ' - ' + this.text + (this.given ? ' (Given)' : '')
+        }
+
+    </script>
+    <script lang="javascript" id="WordMap">
+        function WordMap(words) {
+            for (var i in words)
+                this.add(words[i]);
+        }
+
+        WordMap.prototype.add = function WordMap_add(word) {
+            if (word.word == null)
+                return;
+
+            this[word.word] = word;
+            this[word.word.toUpperCase()] = word;
+
+            if (word.x == null)
+                return;
+
+            this[word.getId(0) + '_' + word.dx] = word;
+            this[word.getId(word.word.length - 1) + '_' + word.dx] = word;
+
+            for (var i = 0; word.x != null && i < word.word.length; i++) {
+                if (this[word.getId(i)] == null)
+                    this[word.getId(i)] = [word]
+                else
+                    this[word.getId(i)].push(word);
+            }
+        }
+
+    </script>
+    <script lang="javascript" id="Globals">
+
+        var grid = new Grid();
+        var currenttab = 'Layout';
+        var moveDirection = { x: 1, y: 0 };
+        var fitWordMap = {};
+        var actionundo = { process: keyUndoRedo, name: 'Undo', primary: grid.undo, secondary: grid.redo };
+        var actionredo = { process: keyUndoRedo, name: 'Redo', primary: grid.redo, secondary: grid.undo };
+        var alphabets = new Alphabets({ English: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', TeReo: 'AĀEĒGHIĪKMNOŌPRTUŪW', Numbers: '01234567689' });
+        var gridactions = new GridActions(alphabets);
+        var wordactions = new WordActions(alphabets);
+        var resizeTimerId = null;
+
+        function tabChange(id) {
+            eval("read" + currenttab + "()");
+            document.getElementById(currenttab).className = 'tab';
+            document.getElementById(currenttab + 'Display').style.display = 'none';
+            currenttab = id == null ? event.target.parentNode.id : id;
+            document.getElementById(currenttab + 'Display').style.display = 'block';
+            document.getElementById(currenttab).className = 'tabselected';
+            eval("show" + currenttab + "()");
+        }
+
+        function readSettings() {
+
+            for (var i in grid.defaults) {
+                var element = document.getElementById(i);
+                if (element != null) {
+                    if (element.type == 'checkbox' || element.type == 'radio')
+                        grid.settings[i] = element.checked;
+                    else if (element.type == 'text')
+                        grid.settings[i] = element.value;
+                }
+            }
+
+            localStorage[document.getElementById('title').value] = grid.textGet();
+        }
+
+        function showSettings() {
+
+            for (var i in grid.defaults) {
+                var element = document.getElementById(i);
+                if (element != null) {
+                    if (element.type == 'checkbox' || element.type == 'radio')
+                        element.checked = grid.settings[i];
+                    else if (element.type == 'text')
+                        element.value = grid.settings[i];
+                }
+            }
+        }
+
+
+        function readLayout() {
+            readSettings();
+
+            var alphabet = alphabets.fromSettings(grid.settings);
+
+            for (var i = 0; i < alphabet.length; i++) {
+                var letter = alphabet[i];
+
+                grid.letterinfo[letter].given = document.getElementById('given' + letter).checked;
+            }
+        }
+
+
+
+        function showWords() {
+            var compact = document.getElementById('wordTableCompact');
+            var definition = document.getElementById('wordTableDefinition');
+            var table = grid.settings.wordDefinitions ? definition : compact;
+
+            compact.style.display = grid.settings.wordDefinitions ? 'none' : 'table';
+            definition.style.display = grid.settings.wordDefinitions ? 'table' : 'none';
+
+            var words = grid.sortWords();
+            var counts = [0, 0, 0];
+            var cells = [];
+
+            if (grid.settings.wordDefinitions) {
+                for (var i in words)
+                    counts[words[i].group]++;
+
+                counts = [0, counts[0], counts[0] + counts[1]];
+            }
+
+            for (var i in words) {
+                var word = words[i];
+                var x = grid.settings.wordDefinitions ? 0 : word.group;
+                var y = grid.settings.wordDefinitions ? counts[word.group] + word.order : word.order * 2;
+
+                while (table.rows.length < y + 2)
+                    table.insertRow(-1);
+
+                var row = table.rows[y];
+
+                while (row.cells.length < 3)
+                    row.insertCell(-1);
+
+                var cell = row.cells[x];
+
+                cell.className = word.selected ? 'selected' : '';
+                cell.id = 'word_' + word.wordid + '_0';
+                cell.colSpan = 1;
+                cells.push(cell);
+
+                word.html(cell, grid.settings);
+
+                if (!grid.settings.wordDefinitions && word.showdefinition) {
+                    row = table.rows[y + 1];
+                    while (row.cells.length < 1)
+                        row.insertCell(-1);
+                    cell = row.cells[0];
+                    cell.id = 'word_' + word.wordid + '_1';
+                    cell.className = word.selected ? 'selected' : '';
+                    cell.colSpan = 3;
+                    word.definitionCompact(cell, grid.settings);
+                    cells.push(cell);
+                }
+                else if (grid.settings.wordDefinitions) {
+                    row.cells[1].id = 'word_' + word.wordid + '_1';
+                    row.cells[2].id = 'word_' + word.wordid + '_2';
+                    row.cells[1].className = row.cells[2].className = word.selected ? 'selected' : '';
+                    word.definitionDefinition(row.cells[1], row.cells[2], grid.settings);
+                    cells.push(row.cells[1]);
+                    cells.push(row.cells[2]);
+                }
+            }
+
+            for (var y = 0; y < table.rows.length; y++) {
+                for (var x = 0; x < table.rows[y].cells.length; x++) {
+                    if (cells.indexOf(table.rows[y].cells[x]) < 0)
+                        table.rows[y].cells[x].innerHTML = '';
+                }
+            }
+        }
+
+
+        function showState() {
+
+            grid.updateCounts();
+            grid.updateWords();
+
+            var alphabet = alphabets.fromSettings(grid.settings);
+
+            for (var i = 0; i < alphabet.length; i++) {
+                var letter = alphabet[i];
+                document.getElementById('letter' + i).innerHTML =
+                    '<td>' + letter + '</td>' +
+                    '<td>' + (grid.letterinfo[letter].refs.length == 0 ? '' : grid.letterinfo[letter].refs.length) + '</td>' +
+                    '<td>' + (grid.letterinfo[letter].code == 0 ? '' : grid.letterinfo[letter].code) + '</td>' +
+                    '<td><input type="checkbox" id="given' + letter + '" ' + (grid.letterinfo[letter].given ? 'checked="checked"' : '') + "/></td>";
+            }
+
+            for (var i = alphabet.length; i < alphabets.English.length; i++) {
+                document.getElementById('letter' + i).innerHTML = '';
+            }
+
+            document.getElementById('undo').disabled = grid.undo.length == 0;
+            document.getElementById('redo').disabled = grid.redo.length == 0;
+            document.getElementById('undo').title = grid.undo.length == 0 ? 'Nothing to undo' : 'Undo ' + grid.undo[grid.undo.length - 1].id.split('_')[1];
+            document.getElementById('redo').title = grid.redo.length == 0 ? 'Nothing to redo' : 'Redo ' + grid.redo[grid.redo.length - 1].id.split('_')[1];
+        }
+
+        function showLayoutGrid() {
+            var cellFunction = function (x, y, letter) {
+                return '<td><input id="' + x + '_' + y + '" onclick="letterClick()" ondblclick="letterDblClick()" onmousemove="letterMouseMove()"' +
+                            'value="' + (letter || ' ') + '"/></td>';
+            }
+
+            document.getElementById('puzzlegrid').innerHTML = '';
+            document.getElementById('size').innerHTML = (grid.xmax - grid.xmin) + 'x' + (grid.ymax - grid.ymin);
+            document.getElementById('lettersgrid').innerHTML = grid.table(cellFunction);
+        }
+
+        function showLayout() {
+            showLayoutGrid();
+            showSettings();
+            showState();
+            showWords();
+            localStorage[document.getElementById('title').value] = grid.textGet();
+        }
+
+        function showAlphabets() {
+            var html = '';
+            var letters = document.getElementById('letters');
+
+            for (var name in alphabets.alphabets) {
+                html += '<input id="alphabet' + name + '" name="alphabet" type="radio" onclick="readSettings(); showState();" />' +
+                        '<label for="alphabet' + name + '">' + name + '</label>';
+            }
+
+            for (var i = 0; i < alphabets.max; i++) {
+                letters.insertRow(-1);
+                letters.rows[letters.rows.length - 1].id = 'letter' + i;
+            }
+
+            document.getElementById('alphabets').innerHTML = html;
+        }
+
+        function readPuzzle() {
+
+            readSettings();
+            localStorage[document.getElementById('title').value] = grid.textGet();
+        }
+
+        function blankCellBorders(x, y) {
+            var html = '';
+
+            if (grid.get(x - 1, y)) html += '<rect x="0%" y="0%" width="25%" height="100%" style="fill:black;stroke-width:0px;" />';
+            if (grid.get(x + 1, y)) html += '<rect x="75%" y="0%" width="25%" height="100%" style="fill:black;stroke-width:0px;" />';
+            if (grid.get(x, y - 1)) html += '<rect x="0%" y="0%" width="100%" height="25%" style="fill:black;stroke-width:0px;" />';
+            if (grid.get(x, y + 1)) html += '<rect x="0%" y="75%" width="100%" height="25%" style="fill:black;stroke-width:0px;" />';
+            if (grid.get(x - 1, y - 1)) html += '<rect x="0%" y="0%" width="25%" height="25%" style="fill:black;stroke-width:0px;" />';
+            if (grid.get(x - 1, y + 1)) html += '<rect x="0%" y="75%" width="25%" height="25%" style="fill:black;stroke-width:0px;" />';
+            if (grid.get(x + 1, y - 1)) html += '<rect x="75%" y="0%" width="25%" height="25%" style="fill:black;stroke-width:0px;" />';
+            if (grid.get(x + 1, y + 1)) html += '<rect x="75%" y="75%" width="25%" height="25%" style="fill:black;stroke-width:0px;" />';
+
+            return html == '' ? '' : '<svg xmlns="http://www.w3.org/2000/svg" style="display: block;" class="empty">' + html + '</svg>';
+        }
+
+        function showPuzzle() {
+            var gridhtml = '';
+            var wordhtml = '';
+            var given = new WordMap([]);
+            var numbers = {};
+            var number = 1;
+            var alphabet = alphabets.fromSettings(grid.settings);
+            var cellFunction = function (x, y, letter) {
+                var cell = {};
+
+                if (grid.settings.wordFind)
+                    cell.code = letter || alphabet[Math.floor(Math.random() * alphabet.length)];
+                else if (letter == null)
+                    cell.empty = '';
+                else if (grid.settings.typeCrossword && numbers[x + '_' + y])
+                    cell.number = numbers[x + '_' + y];
+                else if (given[x + '_' + y])
+                    cell.code = letter;
+                else if (!grid.settings.typeCodecracker)
+                    cell.number = '';
+                else if (grid.settings.showGivenLetters && grid.letterinfo[letter].given)
+                    cell.code = letter;
+                else
+                    cell.number = grid.letterinfo[letter].code;
+
+                for (var className in cell)
+                    return '<td id="' + x + '_' + y + '" class="' + className + '">' + cell[className] + '</td>';
+            }
+
+            showSettings();
+
+            for (var i in grid.words) {
+                var word = grid.words[i];
+                if (word.x != null && word.given)
+                    given.add(word);
+                if (word.x != null)
+                    numbers[word.getId(0)] = word.number;
+            }
+
+            if (grid.settings.showWords || grid.settings.showDefinitions) {
+                var acrossDown = grid.settings.showAcrossDown || grid.settings.typeCrossword;
+                var lists = acrossDown ? [[], []] : [[]];
+                var columns = (grid.settings.columns2 ? 2 : grid.settings.columns4 ? 4 : 6) / lists.length;
+
+                for (var i in grid.words) {
+                    var word = grid.words[i];
+                    if (word.x != null)
+                        lists[acrossDown ? word.group : 0].push(grid.words[i]);
+                }
+
+                wordhtml += '<table class="wordlist">';
+                wordhtml += acrossDown ? '<tr><th colspan="' + columns + '">Across</th><th colspan="' + columns + '">Down</th></tr>' : '';
+                wordhtml += '<tr>';
+
+                for (var x = 0; x < lists.length; x++) {
+                    var list = lists[x];
+
+                    list.sort(function (a, b) {
+                        return grid.settings.typeCrossword && a.x + a.y * 1000 < b.x + b.y * 1000 ? -1 :
+                               grid.settings.typeCrossword && a.x + a.y * 1000 > b.x + b.y * 1000 ? 1 :
+                               grid.settings.orderByLen && a.word.length < b.word.length ? -1 :
+                               grid.settings.orderByLen && a.word.length > b.word.length ? 1 :
+                               a.word < b.word ? -1 :
+                               a.word > b.word ? 1 : 0;
+                    });
+
+                    for (var y = 0, count = Math.ceil(list.length / columns) ; y < columns * count; y += count) {
+                        wordhtml += '<td>';
+                        for (var i = y; i < list.length && i < y + count; i++)
+                            wordhtml += '<div onclick="wordSelect(' + list[i].wordid + ')">' +
+                                        (grid.settings.typeCrossword ? list[i].number + '. ' : grid.settings.showNumbering ? (i + 1) + '. ' : '') +
+                                        (grid.settings.showWords ? list[i].word : '') + ' ' +
+                                        (grid.settings.showWords && grid.settings.showDefinitions ? ' - ' : '') +
+                                        (grid.settings.showDefinitions ? list[i].text : '') +
+                                        list[i].imageHtml() + list[i].imageSuffix +
+                                        '</div>';
+                        wordhtml += '</td>';
+                    }
+                }
+
+                wordhtml += '</tr></table>';
+            }
+
+            document.getElementById('lettersgrid').innerHTML = '';
+            document.getElementById('puzzlerings').innerHTML = '';
+            document.getElementById('puzzletitle').innerHTML = grid.settings.title;
+            document.getElementById('puzzlesubtitle').innerHTML = grid.settings.subtitle;
+            document.getElementById('puzzlegrid').innerHTML = grid.table(cellFunction);
+            document.getElementById('puzzlewordlist').innerHTML = wordhtml;
+            document.getElementById('puzzlecodes').style.display = grid.settings.typeCodecracker ? 'block' : 'none';
+
+            for (var i in grid.words) {
+                var word = grid.words[i];
+
+                if (grid.settings.wordFind) {
+                    if (word.given)
+                        word.ring(document.getElementById('puzzlerings'));
+                } else {
+                    word.blankborder(document.getElementById('puzzlerings'));
+                }
+            }
+
+
+            for (var i = 1; i <= alphabets.max; i++) {
+                document.getElementById('code' + i).innerHTML = document.getElementById('code' + i).className = '';
+                document.getElementById('number' + i).innerHTML = document.getElementById('number' + i).className = '';
+            }
+
+            for (var letter in grid.letterinfo) {
+                var i = grid.letterinfo[letter].code;
+                if (i != 0) {
+                    document.getElementById('number' + i).className = 'code';
+                    document.getElementById('code' + i).className = 'code';
+                    document.getElementById('number' + i).innerHTML = i;
+                    document.getElementById('code' + i).innerHTML = grid.letterinfo[letter].given ? letter : '';
+                }
+            }
+        }
+
+        function readImages() {
+        }
+
+        function showImages() {
+            var html = '<tr><th>Word</th><th>Width</th><th>Height</th><th>URL</th><th>Definition</th><th>Image</th><th>Definition</th></tr>';
+
+            for (var i in grid.words) {
+                var word = grid.words[i];
+
+                if (word.constructor == Header || word.word == '')
+                    continue;
+
+                html += '<tr>' +
+                        '<td>' + word.word + '</td>' +
+                        '<td><input onblur="imageUpdate()" id="image_' + i + '_imageWidth"/></td>' +
+                        '<td><input onblur="imageUpdate()" id="image_' + i + '_imageHeight"/></td>' +
+                        '<td><input onblur="imageUpdate()" id="image_' + i + '_imageURL"/></td>' +
+                        '<td><input onblur="imageUpdate()" id="image_' + i + '_text"/></td>' +
+                        '<td id="image_' + i + '">' + word.imageHtml() + '</td>' +
+                        '<td><input onblur="imageUpdate()" id="image_' + i + '_imageSuffix"/></td>' +
+                        '</tr>';
+            }
+
+            document.getElementById("ImagesDisplay").innerHTML = '<table>' + html + '</table>';
+
+            for (var i in grid.words) {
+                var word = grid.words[i];
+
+                if (word.constructor == Header || word.word == '')
+                    continue;
+
+                document.getElementById('image_' + i + '_imageWidth').value = word.imageWidth;
+                document.getElementById('image_' + i + '_imageHeight').value = word.imageHeight;
+                document.getElementById('image_' + i + '_imageURL').value = word.imageURL;
+                document.getElementById('image_' + i + '_text').value = word.text;
+                document.getElementById('image_' + i + '_imageSuffix').value = word.imageSuffix;
+            }
+        }
+
+        function imageUpdate() {
+            var id = parseid(event.target.id);
+            var field = id[2];
+            var word = grid.words[id.y];
+
+            if (word[field] != event.target.value) {
+                var newword = word.clone();
+
+                newword[field] = event.target.value;
+                grid.transactionNew('Changed ' + word[field] + ' to ' + newword[field] + ' (' + field + ')');
+                grid.setWord({ wordid: word.wordid, word: newword }, grid.undo);
+                document.getElementById('image_' + id.y).innerHTML = newword.imageHtml();
+            }
+        }
+
+        function readTransfer() {
+        }
+
+        function showTransfer() {
+            document.getElementById('transfertextarea').value = '';
+        }
+
+        function readLocalStorage() {
+        }
+
+        function showLocalStorage() {
+
+            var html = '';
+
+            for (var i in localStorage)
+                html +=
+                    '<tr id="localstorage_' + i + '">' +
+                    '   <td>' + i + '</td>' +
+                    '   <td>' + localStorage[i].split('\n')[0] + '</td>' +
+                    '   <td><input type="button" value="Load" onclick="localStorageLoad()"/></td>' +
+                    '   <td><input type="button" value="Delete" onclick="localStorageDelete()"/></td>' +
+                    '</tr>';
+
+            document.getElementById("localstoragegrid").innerHTML = html;
+        }
+
+        function selectClass(classes, newclass) {
+
+            for (var c in classes) {
+                var selected = document.getElementsByClassName(classes[c]);
+
+                for (var i = selected.length - 1; i >= 0; i--)
+                    selected[i].className = newclass;
+            }
+        }
+
+        function letterMouseMove() {
+            var words = fitWordMap[event.target.id];
+            var rings = document.getElementById('layoutrings');
+
+            if (words != null) {
+
+                words[0].ring(rings);
+                fitWordMap['ring_' + words[0].wordid] = words;
+            } else {
+                rings.innerHTML = '';
+                words = new WordMap(grid.words)[event.target.id];
+
+                var title = '';
+
+                for (var i in words)
+                    title += words[i].title() + '\n';
+
+                event.target.title = title.trim();
+            }
+        }
+
+        function letterClick() {
+            var words = fitWordMap[event.target.id];
+            var word = words == null ? null : words[0];
+            var map = new WordMap(grid.words);
+
+            for (var i in grid.words) {
+                if (!event.shiftKey && grid.words[i].selected)
+                    wordSelect(grid.words[i].wordid, false);
+            }
+
+            if (word == null || map[word.word] == null) {
+                event.target.focus();
+            } else {
+                map[word.word].fitted = true;
+                grid.transactionNew('Fit ' + word.word);
+
+                grid.setLetters(word);
+                showLayout();
+                wordSelect(word.wordid, true);
+            }
+
+            fitWordMap = {};
+        }
+
+        function letterDblClick() {
+            var words = new WordMap(grid.words)[event.target.id];
+
+            for (var i = 0; words && i < words.length; i++)
+                wordSelect(words[i].wordid, i == 0 ? !words[0].selected : words[0].selected);
+        }
+
+        function parseid(id) {
+            var split = id.split('_');
+            split.x = parseInt(split[0]);
+            split.y = parseInt(split[1]);
+            return split;
+        }
+
+        function letterSet(x, y, letter) {
+
+            grid.setLetter({ x: x, y: y, letter: letter }, grid.undo);
+            document.getElementById(x + '_' + y).value = letter;
+        }
+
+        function letterDelete(letters) {
+            var map = new WordMap(grid.words);
+
+            for (var i = 0; i < letters.length; i++) {
+                if (/[-0-9]+_[-0-9]+/.test(letters[i].id) && map[letters[i].id]) {
+
+                    map[letters[i].id].pop();
+
+                    if (map[letters[i].id].length == 0) {
+
+                        var pos = parseid(letters[i].id);
+
+                        letterSet(pos.x, pos.y, ' ');
+                    }
+                }
+            }
+        }
+
+        function letterSelect(letters, selected) {
+
+            var map = selected ? {} : new WordMap(grid.words);
+
+            for (var i = 0; i < letters.length; i++) {
+                var cell = document.getElementById(letters[i].id) || {};
+                var refs = map[letters[i].id];
+                var className = selected ? 'selected' : '';
+
+                for (var z = 0; className == '' && z < refs.length; z++)
+                    className = refs[z].selected ? 'selected' : '';
+
+                cell.className = className;
+            }
+        }
+
+        function setMoveDirection(dx, dy) {
+            moveDirection.x = dx;
+            moveDirection.y = dy;
+            document.getElementById('move').value = String.fromCharCode(moveDirection.x == 0 ? 0x2195 : 0x2194);
+        }
+
+        function keyMoveGrid(action) {
+            setMoveDirection(Math.abs(action.gridmove.x), Math.abs(action.gridmove.y));
+        }
+
+        function keyMoveWord(action) {
+
+            var word = grid.words[action.pos.y];
+            var wordy = event.target.getBoundingClientRect().top * action.wordmove;
+            var besty = wordy;
+            var bestelement = event.target;
+
+            for (var i in grid.words) {
+                var element = document.getElementById(action.pos[0] + '_' + i);
+                var y = element ? element.getBoundingClientRect().top * action.wordmove : 0;
+
+                if (element && y > wordy && (besty == wordy || y < besty)) {
+                    besty = y;
+                    bestelement = element;
+                }
+            }
+
+            bestelement.focus();
+        }
+
+        function keyEnsureBlank(action) {
+            var word = grid.words[action.pos.y];
+
+            if (word.word == '') {
+                for (var i in grid.words) {
+                    if (grid.words[i].group == 2 && grid.words[i].order == word.order + 1)
+                        return;
+                }
+
+                var newword = word.clone();
+                newword.order++;
+                grid.transactionNew("Add blank word");
+                grid.setWord({ wordid: grid.nextWordId(), word: newword }, grid.undo);
+                showWords();
+            }
+        }
+
+        function keyBackspace(action) {
+
+            var selected = document.getElementsByClassName("selected");
+
+            if (selected.length > 1) {
+                grid.transactionNew('Delete words');
+                letterDelete(selected);
+            } else {
+                grid.transactionNew('Delete letter');
+                letterSet(action.pos.x, action.pos.y, ' ');
+                action.gridmove = { x: -moveDirection.x, y: -moveDirection.y };
+            }
+
+            selectClass(['selected'], '');
+            fitWordMap = {};
+            showState();
+            showWords();
+        }
+
+        function keyLetter(action) {
+            grid.transactionNew('Type ' + action.name);
+
+            letterSet(action.pos.x, action.pos.y, action.name);
+            selectClass(['selected'], '');
+            fitWordMap = {};
+            showState();
+            showWords();
+        }
+
+        function keyUndoRedo(action) {
+            if (action.primary.length > 0) {
+
+                selectClass(['selected'], '');
+                fitWordMap = {};
+
+                grid.transactionUndo(action.primary, action.secondary);
+            }
+
+            tabChange(currenttab);
+        }
+
+        function keyUpGrid(actions) {
+
+            event.target.value = grid.get(parseid(event.target.id).x, parseid(event.target.id).y) || '';
+
+            return keyUp(actions);
+        }
+
+        function keyUp(actions) {
+
+            var action = actions[(event.ctrlKey ? 'C' : '') + event.keyCode];
+
+            if (action == null)
+                return true;
+
+            action.returnvalue = false;
+            action.pos = parseid(event.target.id);
+            action.event = event;
+            action.process(action);
+
+            if (action.gridmove != null) {
+                var next = document.getElementById((action.pos.x + action.gridmove.x) + '_' + (action.pos.y + action.gridmove.y));
+
+                if (next != null)
+                    next.focus();
+            }
+
+            return action.returnvalue;
+        }
+
+        function reset() {
+            grid.reset(0, 0, 30, 30);
+            grid.settings.title = 'Title';
+            grid.updateCount();
+            grid.updateWords();
+            showLayout();
+        }
+
+        function localStorageLoad() {
+            var title = event.target.parentNode.parentNode.id.split('_')[1];
+            grid.textSet(localStorage[title]);
+            grid.settings.title = title;
+            showSettings();
+            tabChange('Layout');
+        }
+
+        function localStorageDelete() {
+            var name = event.target.parentNode.parentNode.id.split('_')[1];
+            localStorage.removeItem(name);
+            showLocalStorage();
+        }
+
+        function localStorageLoadFirst() {
+
+            var maxvalue = '';
+            var title = '';
+
+            for (var i in localStorage) {
+                if (localStorage[i] > maxvalue) {
+                    title = i;
+                    maxvalue = localStorage[i];
+                }
+            }
+
+            grid.reset(0, 0, 30, 30);
+
+            if (maxvalue != '') {
+                grid.textSet(maxvalue);
+                grid.settings.title = title;
+            }
+        }
+
+        function wordSelect(wordid, selected) {
+
+            var word = grid.words[wordid || parseid(event.target.parentNode.id).y];
+            var checkbox = document.getElementById('checkbox_' + word.wordid) || {};
+
+            word.selected = checkbox.checked = selected == null ? (wordid == null ? checkbox.checked : true) : selected;
+
+            if (currenttab != 'Layout')
+                tabChange('Layout');
+
+            fitWordMap = {};
+
+            letterSelect(word.letters(), word.selected);
+
+            for (var d = 0; ; d++) {
+                var element = document.getElementById('word_' + word.wordid + '_' + d);
+
+                if (element == null)
+                    break;
+                else
+                    element.className = word.selected ? 'selected' : '';
+            }
+
+            if (wordid != null)
+                document.getElementById(word.getId(0)).focus();
+        }
+
+        function resize(xmin, ymin, xmax, ymax) {
+
+            if (grid.undo.length == 0 || grid.undo[grid.undo.length - 1].id.split('_')[1] != event.target.title)
+                grid.transactionNew(event.target.title);
+
+            grid.setSize({
+                xmin: grid.xmin + xmin,
+                ymin: grid.ymin + ymin,
+                xmax: grid.xmax + xmax,
+                ymax: grid.ymax + ymax
+            }, grid.undo);
+
+            if (resizeTimerId != null)
+                window.clearTimeout(resizeTimerId);
+
+            resizeTimerId = window.setTimeout(function () {
+                window.clearTimeout(resizeTimerId);
+                resizeTimerId = null;
+                showState();
+            }, 5000);
+
+            showLayout();
+        }
+
+        function wordScope(all, type) {
+            if (all == null)
+                return [grid.words[parseid(event.target.parentNode.id).y]];
+
+            var words = [];
+
+            for (var i in grid.words) {
+                if (grid.words[i].constructor == type && grid.words[i].word != '' &&
+                    (all || document.getElementById('word_' + i + '_0').className == 'selected'))
+                    words.push(grid.words[i]);
+            }
+
+            return words;
+        }
+
+        function wordDelete() {
+            var word = grid.words[parseid(event.target.parentNode.id).y];
+
+            grid.transactionNew('Delete ' + word.word);
+            letterDelete(word.letters());
+            grid.setWord({ wordid: word.wordid, word: null }, grid.undo);
+            showState();
+            showWords();
+        }
+
+        function wordDefine() {
+            var word = grid.words[parseid(event.target.parentNode.id).y];
+
+            selectClass(['selected'], '');
+
+            if (word.showdefinition) {
+                delete word.showdefinition;
+                showState();
+                showWords();
+            } else {
+
+                grid.updateWords();
+                for (var i in grid.words)
+                    grid.words[i].showdefinition = grid.words[i].selected = false;
+
+                word.showdefinition = word.selected = true;
+                showWords();
+            }
+        }
+
+        function wordUpdate() {
+            var word = grid.words[parseid(event.target.id).y];
+            var value = event.target.value;
+
+            if (value != word.word) {
+                var newword = word.clone();
+
+                newword.setWordValue(value, grid.settings);
+                grid.transactionNew('Changed ' + word.word + ' to ' + newword.word);
+                grid.setWord({ wordid: word.wordid, word: newword }, grid.undo);
+            }
+        }
+
+        function wordMouseMove() {
+            var word = grid.words[parseid(event.target.parentNode.id).y];
+
+            event.target.title = word.title();
+        }
+
+        function wordDefinitionUpdate() {
+            var word = grid.words[parseid(event.target.id).y];
+            var given = document.getElementById('given_' + word.wordid).checked;
+            var text = document.getElementById('text_' + word.wordid).value;
+
+            if (given != word.given || text != word.text) {
+                var newword = word.clone();
+
+                newword.given = given;
+                newword.text = text;
+                grid.transactionNew('Change definition of ' + word.word);
+                grid.setWord({ wordid: word.wordid, word: newword }, grid.undo);
+            }
+        }
+
+
+        function wordFit() {
+            var word = grid.words[parseid(event.target.parentNode.id).y];
+            var locations = grid.wordFit(word);
+
+            fitWordMap = new WordMap(locations);
+            if (locations.length == 0)
+                alert(word.failreason);
+
+            selectClass(['selected'], '');
+            for (var i in locations)
+                letterSelect(locations[i].letters(), true);
+        }
+
+        function wordAutofit(all) {
+
+            grid.transactionNew(event.target.title);
+
+            var start = wordScope(all, UnfittedWord);
+            var words = start.concat();
+            var fitted = new Grid();
+
+            for (var i in words)
+                words[i].failedautofit = 0;
+
+            for (var pass = 5; pass >= 1; pass--, words = start.concat()) {
+
+                words.sort(function (a, b) {
+                    return a.failedautofit > b.failedautofit ? -1 :
+                           a.failedautofit < b.failedautofit ? 1 :
+                           a.word.length > b.word.length ? -1 :
+                           a.word.length < b.word.length ? 1 :
+                           a.word > b.word ? -1 :
+                           a.word < b.word ? 1 : 0;
+                });
+
+                fitted.reset(grid.xmin, grid.ymin, grid.xmax, grid.ymax);
+
+                for (var wordcount = -1; wordcount != words.length;) {
+
+                    wordcount = words.length;
+
+                    for (var i = 0; i < words.length; i++) {
+                        var locations = grid.wordFit(words[i]);
+
+                        if (locations.length > 0) {
+                            locations[0].wordid = words[i].wordid;
+                            grid.setLetters(locations[0]);
+                            fitted.setLetters(locations[0]);
+                            words[i].fitted = true;
+                            words.splice(i--, 1);
+                        }
+                    }
+                }
+
+                if (words.length == 0 || pass == 1)
+                    break;
+
+                grid.transactionUndo(grid.undo, [], grid.undoid);
+
+                for (var i = 0; i < words.length; i++)
+                    words[i].failedautofit++;
+
+                for (var i = 0; i < start.length; i++)
+                    delete start[i].fitted;
+            }
+
+            if (all == null && words.length == 1)
+                alert(words[0].failreason);
+
+            showLayout();
+        }
+
+        function wordUnfit(all) {
+
+            var words = wordScope(all, FittedWord);
+            var letters = [];
+
+            for (var i in words)
+                letters = letters.concat(words[i].letters());
+
+            grid.transactionNew(event.target.title);
+            letterDelete(letters);
+            showLayout();
+        }
+
+        function wordSettings() {
+
+            var settings = document.getElementById('wordSettings');
+            var visible = settings.style.opacity == 0;
+
+            event.target.value = visible ? 'Options ˄' : 'Options ˅';
+            event.target.title = visible ? 'Hide the Options' : 'Show the Options'
+            settings.style.zIndex = visible ? 0 : -1;
+            settings.style.opacity = visible ? 1 : 0;
+            settings.style.position = visible ? 'relative' : 'absolute';
+            showWords();
+        }
+
+        function transferExportAll() {
+            var exportdata = {};
+
+            for (var i in localStorage)
+                exportdata[i] = localStorage[i];
+
+            document.getElementById('transfertextarea').value = JSON.stringify(exportdata);
+        }
+
+        function transferImportAll() {
+            var importdata = JSON.parse(document.getElementById('transfertextarea').value);
+
+            for (var i in importdata)
+                localStorage[i] = importdata[i];
+
+            tabChange('LocalStorage');
+        }
+
+        localStorageLoadFirst();
+        showAlphabets();
+        showLayout();
+        setMoveDirection(1, 0);
+
+    </script>
+</body>
 </html>
